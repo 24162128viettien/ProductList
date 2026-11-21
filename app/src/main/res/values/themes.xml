@@ -1,0 +1,34 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Base.Theme.ProductList" parent="Theme.Material3.Light.NoActionBar">
+        <!-- Bảng màu M3 -->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/image_bg</item>
+        <item name="colorOnPrimaryContainer">@color/primary_dark</item>
+        <item name="colorSecondaryContainer">@color/image_bg</item>
+        <item name="colorOnSecondaryContainer">@color/primary_dark</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/text_main</item>
+        <item name="colorOnSurfaceVariant">@color/text_sub</item>
+        <item name="colorOutline">@color/outline</item>
+        <item name="android:colorBackground">@color/bg_screen</item>
+
+        <!-- Style chung cho thẻ và nút -->
+        <item name="materialCardViewStyle">@style/Widget.App.Card</item>
+        <item name="materialButtonStyle">@style/Widget.App.Button</item>
+    </style>
+
+    <style name="Widget.App.Card" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">@color/surface</item>
+        <item name="cardCornerRadius">20dp</item>
+        <item name="cardElevation">2dp</item>
+    </style>
+
+    <style name="Widget.App.Button" parent="Widget.Material3.Button">
+        <item name="cornerRadius">16dp</item>
+    </style>
+
+    <style name="Theme.ProductList" parent="Base.Theme.ProductList" />
+
+</resources>
