@@ -19,6 +19,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import android.view.View;
 
+
 public class MainActivity extends AppCompatActivity {
 
     private final ArrayList<Product> products = new ArrayList<>(); // dữ liệu hiển thị trên ListView
@@ -99,13 +100,11 @@ public class MainActivity extends AppCompatActivity {
                     progress.setVisibility(View.GONE);   // tải xong: ẩn thanh tiến trình
                     products.clear();
                     for (QueryDocumentSnapshot doc : snapshot) {
-                        String img = doc.getString("image");
-                        int res = img == null ? 0
-                                : getResources().getIdentifier(img, "drawable", getPackageName());
+                        int[] imgs = resolveImages(doc);
                         Double price = doc.getDouble("price");
                         products.add(new Product(doc.getString("name"),
                                 price == null ? 0 : price,
-                                res == 0 ? R.mipmap.ic_launcher : res,
+                                imgs,
                                 doc.getString("cpu"), doc.getString("ram"), doc.getString("storage"),
                                 doc.getString("screen"), doc.getString("battery"), doc.getString("description")));
                     }
@@ -119,6 +118,36 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(this, "Lỗi tải dữ liệu: " + e.getMessage(),
                             Toast.LENGTH_LONG).show();
                 });
+    }
+
+
+    /**
+     * Lấy danh sách ảnh của sản phẩm (Product sẽ tự bù cho đủ ít nhất 2 ảnh).
+     * Ưu tiên mảng "images" trên Firestore; nếu không có thì dùng "image" rồi tự dò thêm
+     * các ảnh cùng tên có hậu tố _2, _3, ... trong drawable (vd: airpods_pro, airpods_pro_2).
+     */
+    private int[] resolveImages(QueryDocumentSnapshot doc) {
+        ArrayList<String> names = new ArrayList<>();
+        Object raw = doc.get("images");
+        if (raw instanceof java.util.List) {
+            for (Object o : (java.util.List<?>) raw) if (o != null) names.add(o.toString());
+        }
+        String main = doc.getString("image");
+        if (names.isEmpty() && main != null) {
+            names.add(main);
+            for (int i = 2; i <= 10; i++) {
+                if (getResources().getIdentifier(main + "_" + i, "drawable", getPackageName()) == 0) break;
+                names.add(main + "_" + i);
+            }
+        }
+        ArrayList<Integer> ids = new ArrayList<>();
+        for (String n : names) {
+            int res = getResources().getIdentifier(n, "drawable", getPackageName());
+            if (res != 0) ids.add(res);
+        }
+        int[] out = new int[ids.size()];
+        for (int i = 0; i < out.length; i++) out[i] = ids.get(i);
+        return out;
     }
 
     /**

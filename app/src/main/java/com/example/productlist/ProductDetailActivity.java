@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.view.View;
@@ -14,6 +13,8 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.SetOptions;
 import java.util.HashMap;
 import java.util.Map;
+import androidx.viewpager2.widget.ViewPager2;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -32,7 +33,10 @@ public class ProductDetailActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.tvDetailName)).setText(product.getName());
         ((TextView) findViewById(R.id.tvDetailPrice))
                 .setText(String.format("%,.0f đ", product.getPrice()));
-        ((ImageView) findViewById(R.id.imgDetail)).setImageResource(product.getImage());
+        // Thư viện ảnh: vuốt ngang xem nhiều ảnh, chấm tròn bên dưới chỉ trang hiện tại
+        ViewPager2 pager = findViewById(R.id.pagerImages);
+        pager.setAdapter(new ImagePagerAdapter(product.getImages()));
+        new TabLayoutMediator(findViewById(R.id.tabDots), pager, (tab, position) -> { }).attach();
 
         // Danh sách thông số: nhãn + giá trị (bỏ qua dòng không có dữ liệu)
         LinearLayout container = findViewById(R.id.specContainer);
